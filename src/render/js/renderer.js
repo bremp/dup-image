@@ -8,7 +8,7 @@ const dom = require("../js/dom");
 
 // get list of files from the `main` process
 ipcRenderer.invoke("app:get-files").then((files = []) => {
-  //   dom.displayFiles(files);
+  dom.displayFiles(files);
   console.log("get list of files from the `main` process");
 });
 
@@ -39,9 +39,9 @@ dragDrop("#uploader", (files) => {
 // open filesystem dialog
 window.openDialog = () => {
   console.log("Open dialog clicked!");
-  //   ipcRenderer.invoke("app:on-fs-dialog-open").then(() => {
-  //     ipcRenderer.invoke("app:get-files").then((files = []) => {
-  //       dom.displayFiles(files);
-  //     });
-  //   });
+  ipcRenderer.invoke("app:on-fs-dialog-open").then(() => {
+    ipcRenderer.invoke("app:get-files").then((files = []) => {
+      dom.displayFiles(files);
+    });
+  });
 };

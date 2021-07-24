@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 
 // local dependencies
@@ -37,7 +37,7 @@ app.on("ready", () => {
   const win = openWindow();
 
   // watch files
-  // io.watchFiles(win);
+  io.watchFiles(win);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -59,3 +59,51 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+/************************/
+
+// return list of files
+ipcMain.handle("app:get-files", () => {
+  return io.getFiles();
+});
+
+// listen to file(s) add event
+ipcMain.handle("app:on-file-add", (event, files = []) => {
+  io.addFiles(files);
+});
+
+// open filesystem dialog to choose files
+ipcMain.handle("app:on-fs-dialog-open", (event) => {
+  const files = dialog.showOpenDialogSync({
+    properties: ["openFile", "multiSelections"],
+  });
+
+  io.addFiles(
+    files.map((filepath) => {
+      return {
+        name: path.parse(filepath).base,
+        path: filepath,
+      };
+    })
+  );
+});
+
+/*-----*/
+
+// listen to file delete event
+ipcMain.on("app:on-file-delete", (event, file) => {
+  io.deleteFile(file.filepath);
+});
+
+// listen to file open event
+ipcMain.on("app:on-file-open", (event, file) => {
+  io.openFile(file.filepath);
+});
+
+// listen to file copy event
+ipcMain.on("app:on-file-copy", (event, file) => {
+  event.sender.startDrag({
+    file: file.filepath,
+    icon: path.resolve(__dirname, "./resources/paper.png"),
+  });
+});
