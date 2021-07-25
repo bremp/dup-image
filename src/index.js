@@ -75,7 +75,7 @@ ipcMain.handle("app:on-file-add", (event, files = []) => {
 // open filesystem dialog to choose files
 ipcMain.handle("app:on-fs-dialog-open", (event) => {
   const files = dialog.showOpenDialogSync({
-    properties: ["openFile", "multiSelections"],
+    properties: ["openDirectory"],
   });
 
   io.addFiles(
