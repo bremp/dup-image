@@ -74,18 +74,21 @@ ipcMain.handle("app:on-file-add", (event, files = []) => {
 
 // open filesystem dialog to choose files
 ipcMain.handle("app:on-fs-dialog-open", (event) => {
+  console.log("Handle dialog open");
   const files = dialog.showOpenDialogSync({
     properties: ["openDirectory"],
   });
 
-  io.addFiles(
-    files.map((filepath) => {
-      return {
-        name: path.parse(filepath).base,
-        path: filepath,
-      };
-    })
-  );
+  if (files) {
+    io.addFiles(
+      files.map((filepath) => {
+        return {
+          name: path.parse(filepath).base,
+          path: filepath,
+        };
+      })
+    );
+  }
 });
 
 /*-----*/
