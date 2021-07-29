@@ -13,12 +13,12 @@ const appDir = path.resolve(os.homedir(), "electron-app-files");
 
 /****************************/
 
-// get the list of files
-exports.getFiles = () => {
-  const files = fs.readdirSync(appDir);
+// get the list of files from directory. Default to application directory.
+exports.getFiles = (dir = appDir) => {
+  const files = fs.readdirSync(dir);
 
   return files.map((filename) => {
-    const filePath = path.resolve(appDir, filename);
+    const filePath = path.resolve(dir, filename);
     const fileStats = fs.statSync(filePath);
 
     return {

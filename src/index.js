@@ -72,7 +72,7 @@ ipcMain.handle("app:on-file-add", (event, files = []) => {
   io.addFiles(files);
 });
 
-// open filesystem dialog to choose files
+// open filesystem dialog to choose folder.
 ipcMain.handle("app:on-fs-dialog-open", (event) => {
   console.log("Handle dialog open");
   const files = dialog.showOpenDialogSync({
@@ -80,14 +80,18 @@ ipcMain.handle("app:on-fs-dialog-open", (event) => {
   });
 
   if (files) {
-    io.addFiles(
-      files.map((filepath) => {
-        return {
-          name: path.parse(filepath).base,
-          path: filepath,
-        };
-      })
-    );
+    const dir = files.shift();
+    console.log("Selected folder: %s", dir);
+    const images = io.getFiles(dir);
+    console.log(images);
+    // io.addFiles(
+    //   files.map((filepath) => {
+    //     return {
+    //       name: path.parse(filepath).base,
+    //       path: filepath,
+    //     };
+    //   })
+    // );
   }
 });
 
