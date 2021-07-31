@@ -10,15 +10,41 @@ const notification = require("./notification");
 
 // get application directory
 const appDir = path.resolve(os.homedir(), "electron-app-files");
+// May want to move to caller for specifying extensions to search.
+const ext = ".jpg|.jpeg|.png";
 
 /****************************/
 
-// get the list of files from directory. Default to application directory.
-exports.getFiles = (dir = appDir) => {
-  const files = fs.readdirSync(dir);
+// get the list of image files from given directory.
+exports.findImages = (dir, files, result, regex) => {
+  files = files || fs.readdirSync(dir);
+  result = result || [];
+  regex = regex || new RegExp(`\\${ext}$`);
+
+  for (let i = 0; i < files.length; i++) {
+    let file = path.join(dir, files[i]);
+    if (fs.statSync(file).isDirectory() && !path.extname(file)) {
+      try {
+        result = findFiles(file, readdirSync(file), result, regex);
+      } catch (error) {
+        continue;
+      }
+    } else {
+      if (regex.test(file)) {
+        result.push(file);
+      }
+    }
+  }
+  return result;
+};
+
+// Candidate for deprecation.
+// get the list of files from directory
+exports.getFiles = () => {
+  const files = fs.readdirSync(appDir);
 
   return files.map((filename) => {
-    const filePath = path.resolve(dir, filename);
+    const filePath = path.resolve(appDir, filename);
     const fileStats = fs.statSync(filePath);
 
     return {

@@ -82,7 +82,7 @@ ipcMain.handle("app:on-fs-dialog-open", (event) => {
   if (files) {
     const dir = files.shift();
     console.log("Selected folder: %s", dir);
-    const images = io.getFiles(dir);
+    const images = io.findImages(dir);
     console.log(images);
     // io.addFiles(
     //   files.map((filepath) => {
