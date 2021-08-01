@@ -38,8 +38,7 @@ exports.findImages = (dir, files, result) => {
   return result;
 };
 
-// Candidate for deprecation.
-// get the list of files from directory
+// TODO:
 exports.processImages = (images) => {
   console.log("Process images: " + images);
 };

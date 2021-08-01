@@ -67,33 +67,31 @@ ipcMain.handle("app:get-files", () => {
   return io.getFiles();
 });
 
+// return list of images from given directory.
+ipcMain.handle("app:find-images", (event, dir) => {
+  return io.findImages(dir);
+});
+
 // listen to file(s) add event
 ipcMain.handle("app:on-file-add", (event, files = []) => {
   io.addFiles(files);
 });
 
-// open filesystem dialog to choose folder.
+// open filesystem dialog to choose folder. Return selected folder.
 ipcMain.handle("app:on-fs-dialog-open", (event) => {
   console.log("Handle dialog open");
   const files = dialog.showOpenDialogSync({
     properties: ["openDirectory"],
   });
 
+  // TODO: Refactor to use ternary operator.
   if (files) {
+    // Get first item in array, which is the selected folder.
     const dir = files.shift();
     console.log("Selected folder: %s", dir);
-    const images = io.findImages(dir);
-    io.processImages(images);
-    console.log(images);
-    // io.addFiles(
-    //   files.map((filepath) => {
-    //     return {
-    //       name: path.parse(filepath).base,
-    //       path: filepath,
-    //     };
-    //   })
-    // );
+    return dir;
   }
+  return files;
 });
 
 /*-----*/

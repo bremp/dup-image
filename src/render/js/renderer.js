@@ -20,9 +20,21 @@ ipcRenderer.on("app:delete-file", (event, filename) => {
 
 // open filesystem dialog
 window.openDialog = () => {
-  ipcRenderer.invoke("app:on-fs-dialog-open").then(() => {
-    ipcRenderer.invoke("app:get-files").then((files = []) => {
-      dom.displayFiles(files);
+  ipcRenderer.invoke("app:on-fs-dialog-open").then((dir) => {
+    // console.log("In renderer. Invoking dialog open: " + dir);
+    // ipcRenderer.invoke("app:get-files").then((files = []) => {
+    //   dom.displayFiles(files);
+    //   console.log("In renderer, received list of images.");
+    //   console.log(files);
+    // });
+    ipcRenderer.invoke("app:find-images", dir).then((images = []) => {
+      console.log(images);
+      images.forEach((img) => {
+        let _out = '<img src="file:///' + img + '" />';
+        //render/display
+        let _target = document.getElementById("image_container");
+        _target.insertAdjacentHTML("beforeend", _out);
+      });
     });
   });
 };
