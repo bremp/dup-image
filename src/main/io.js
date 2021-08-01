@@ -12,14 +12,14 @@ const notification = require("./notification");
 const appDir = path.resolve(os.homedir(), "electron-app-files");
 // May want to move to caller for specifying extensions to search.
 const ext = ".jpg|.jpeg|.png";
+const regex = new RegExp(`\\${ext}$`, "i");
 
 /****************************/
 
 // get the list of image files from given directory.
-exports.findImages = (dir, files, result, regex) => {
+exports.findImages = (dir, files, result) => {
   files = files || fs.readdirSync(dir);
   result = result || [];
-  regex = regex || new RegExp(`\\${ext}$`);
 
   for (let i = 0; i < files.length; i++) {
     let file = path.join(dir, files[i]);
@@ -36,6 +36,12 @@ exports.findImages = (dir, files, result, regex) => {
     }
   }
   return result;
+};
+
+// Candidate for deprecation.
+// get the list of files from directory
+exports.processImages = (images) => {
+  console.log("Process images: " + images);
 };
 
 // Candidate for deprecation.
