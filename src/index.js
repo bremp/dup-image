@@ -67,9 +67,9 @@ ipcMain.handle("app:get-files", () => {
   return io.getFiles();
 });
 
-// return list of images from given directory.
-ipcMain.handle("app:find-images", (event, dir) => {
-  return io.findImages(dir);
+// Return list of similar images from given directory.
+ipcMain.handle("app:find-similar-images", (event, dir) => {
+  return io.findSimilarImages(dir);
 });
 
 // listen to file(s) add event

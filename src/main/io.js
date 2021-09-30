@@ -4,6 +4,7 @@ const fs = require("fs-extra");
 const os = require("os");
 const open = require("open");
 const chokidar = require("chokidar");
+const jimp = require("jimp");
 
 // local dependencies
 const notification = require("./notification");
@@ -17,7 +18,7 @@ const regex = new RegExp(`\\${ext}$`, "i");
 /****************************/
 
 // get the list of image files from given directory.
-exports.findImages = (dir, files, result) => {
+findImages = (dir, files, result) => {
   files = files || fs.readdirSync(dir);
   result = result || [];
 
@@ -38,12 +39,38 @@ exports.findImages = (dir, files, result) => {
   return result;
 };
 
-// TODO:
-exports.processImages = (images) => {
-  console.log("Process images: " + images);
+exports.findSimilarImages = (dir, files, result) => {
+  images = findImages(dir, files, result);
+
+  if (images.length) {
+    processImages(images);
+  }
+  return images;
 };
 
-// Candidate for deprecation.
+// TODO: Algorithm to compare the files to one another?
+// https://www.codedrome.com/comparing-images-node-jimp/
+async function processImages(images) {
+  const results = await readImages(images);
+  const length = images.length;
+  for (let i = 0; i < length; i++) {
+    for (let j = i + 1; j < length; j++) {
+      console.log("comparing: ", images[i], images[j]);
+      console.log("distance: ", jimp.distance(results[i], results[j]));
+    }
+  }
+}
+
+async function readImages(images) {
+  let results = [];
+  for (let i = 0; i < images.length; i++) {
+    const img = await jimp.read(images[i]);
+    results.push(img);
+  }
+  return results;
+}
+
+// TODO: Candidate for deprecation.
 // get the list of files from directory
 exports.getFiles = () => {
   const files = fs.readdirSync(appDir);

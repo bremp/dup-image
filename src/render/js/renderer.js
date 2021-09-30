@@ -27,10 +27,21 @@ window.openDialog = () => {
     //   console.log("In renderer, received list of images.");
     //   console.log(files);
     // });
-    ipcRenderer.invoke("app:find-images", dir).then((images = []) => {
+
+    // ipcRenderer.invoke("app:find-images", dir).then((images = []) => {
+    //   console.log(images);
+    //   images.forEach((img) => {
+    //     let _out = '<img src="file:///' + img + '" width="320" height="240" />';
+    //     //render/display
+    //     let _target = document.getElementById("image_container");
+    //     _target.insertAdjacentHTML("beforeend", _out);
+    //   });
+    // });
+
+    ipcRenderer.invoke("app:find-similar-images", dir).then((images = []) => {
       console.log(images);
       images.forEach((img) => {
-        let _out = '<img src="file:///' + img + '" />';
+        let _out = '<img src="file:///' + img + '" width="320" height="240" />';
         //render/display
         let _target = document.getElementById("image_container");
         _target.insertAdjacentHTML("beforeend", _out);
