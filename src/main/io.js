@@ -41,11 +41,11 @@ findImages = (dir, files, result) => {
 
 exports.findSimilarImages = (dir, files, result) => {
   images = findImages(dir, files, result);
-
+  let alikeImages = [];
   if (images.length) {
-    processImages(images);
+    alikeImages = processImages(images);
   }
-  return images;
+  return alikeImages;
 };
 
 // TODO: Algorithm to compare the files to one another?
@@ -53,12 +53,19 @@ exports.findSimilarImages = (dir, files, result) => {
 async function processImages(images) {
   const results = await readImages(images);
   const length = images.length;
+  const alikeImages = new Set();
   for (let i = 0; i < length; i++) {
     for (let j = i + 1; j < length; j++) {
       console.log("comparing: ", images[i], images[j]);
-      console.log("distance: ", jimp.distance(results[i], results[j]));
+      let distance = jimp.distance(results[i], results[j]);
+      if (distance == 0) {
+        alikeImages.add(images[i]);
+        alikeImages.add(images[j]);
+      }
+      console.log("distance: ", distance);
     }
   }
+  return [...alikeImages];
 }
 
 async function readImages(images) {
